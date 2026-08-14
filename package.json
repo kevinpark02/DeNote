@@ -1,9 +1,9 @@
 {
-  "name": "denote-extension-scaffold-tmp",
-  "displayName": "denote-extension-scaffold-tmp",
+  "name": "DeNote",
+  "displayName": "DeNote",
   "version": "0.0.0",
-  "author": "**",
-  "description": "",
+  "author": "KevinPark",
+  "description": "a chrome extension that listens to music and identifies the notes being played on instruments",
   "type": "module",
   "license": "MIT",
   "keywords": [
