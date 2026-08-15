@@ -1,0 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Music&display=swap');
+
+.title {
+  color: #ffffff;
+  font-size: 30px;
+  text-align: center;
+  font-family: 'Noto Music', sans-serif;
+}
