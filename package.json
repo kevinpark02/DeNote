@@ -1,9 +1,9 @@
 {
-  "name": "denote-extension-scaffold-tmp",
-  "displayName": "denote-extension-scaffold-tmp",
+  "name": "DeNote",
+  "displayName": "DeNote",
   "version": "0.0.0",
-  "author": "**",
-  "description": "",
+  "author": "KevinPark",
+  "description": "a chrome extension that listens to music and identifies the notes being played on instruments",
   "type": "module",
   "license": "MIT",
   "keywords": [
@@ -17,7 +17,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc -b && vite build",
     "preview": "vite preview",
     "fmt": "prettier --write '**/*.{tsx,ts,json,css,scss,md}'",
     "zip": "npm run build && node src/zip.js"

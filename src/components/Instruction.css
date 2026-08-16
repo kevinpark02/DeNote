@@ -1,0 +1,18 @@
+.instruction {
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+.instruction-title {
+  font-weight: bold;
+  margin: 0 0 0.75rem;
+}
+
+.instruction-steps {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.instruction-steps li {
+  margin-bottom: 0.4rem;
+}
