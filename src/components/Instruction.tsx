@@ -1,9 +1,20 @@
+import './Instruction.css'
+
 const Instruction = () => {
   return (
-    <p>Want to learn an electric guitar or bass part from YouTube?
-      Navigate to the "Learn" tab, select “Electric Guitar” or “Bass Guitar,”
-      
-      press “Listen,” and play the video. When the part is finished, press “Done,” and DeNote will figure out the notes for you.</p>
+    <div className="instruction">
+      <p className="instruction-title">
+        Want to learn an electric guitar or bass part from YouTube?
+      </p>
+      <ul className="instruction-steps">
+        <li>Navigate to the "Listen" tab</li>
+        <li>Select "Electric Guitar" or "Bass Guitar"</li>
+        <li>Paste in the URL of the YouTube video</li>
+        <li>Specify the time range of the video</li>
+        <li>Press "Listen"</li>
+        <li>You will find your tutorial in the "Learn" tab</li>
+      </ul>
+    </div>
   )
 }
 
