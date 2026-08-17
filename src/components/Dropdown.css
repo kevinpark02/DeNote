@@ -69,3 +69,9 @@ select.field-select {
   font-size: 0.8rem;
   color: #e05252;
 }
+
+.field-error {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: #e05252;
+}
