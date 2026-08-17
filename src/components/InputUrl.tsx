@@ -6,7 +6,7 @@ type InputUrlProps = {
     onChange: (url: string) => void
 }
 
-const YOUTUBE_URL_PATTERN = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=[\w-]+|youtu\.be\/[\w-]+)/
+export const YOUTUBE_URL_PATTERN = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=[\w-]+|youtu\.be\/[\w-]+)/
 
 const InputUrl = ({ url, onChange }: InputUrlProps) => {
     const [urlInvalid, setUrlInvalid] = useState(false)
@@ -16,7 +16,7 @@ const InputUrl = ({ url, onChange }: InputUrlProps) => {
     }
 
     const handleBlur = (event: FocusEvent<HTMLInputElement>): void => {
-        setUrlInvalid(event.target.value !== '' && !YOUTUBE_URL_PATTERN.test(event.target.value))
+        setUrlInvalid(!YOUTUBE_URL_PATTERN.test(event.target.value))
     }
 
     return (
