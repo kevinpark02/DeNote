@@ -11,10 +11,14 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       outDir: 'build',
       rollupOptions: {
+        input: {
+          offscreen: 'src/offscreen/index.html',
+        },
         output: {
           chunkFileNames: 'assets/chunk-[hash].js',
         },
       },
+
     },
     plugins: [crx({ manifest }), react()],
     legacy: {

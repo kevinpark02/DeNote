@@ -23,5 +23,10 @@ export default defineManifest({
             matches: [],
         },
     ],
-    permissions: ['storage'],
+    permissions: ['storage', 'tabCapture', 'offscreen', 'scripting', 'activeTab'],
+    host_permissions: ['*://*.youtube.com/*', '*://youtu.be/*'],
+    background: {
+        service_worker: 'src/background/index.ts',
+        type: 'module',
+    },
 });
