@@ -43,3 +43,29 @@ select.field-select {
   outline: none;
   border-color: #ffffff;
 }
+
+.time-range {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.time-range-input {
+  width: 4.5rem;
+  text-align: center;
+}
+
+.time-range-separator {
+  font-size: 0.85rem;
+  color: #cccccc;
+}
+
+.field-select-invalid {
+  border-color: #e05252;
+}
+
+.time-range-error {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: #e05252;
+}
