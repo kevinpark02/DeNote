@@ -1,4 +1,6 @@
-import { DropdownId } from "./components/Dropdown";
+import type { DropdownId } from "./components/Dropdown";
+
+export const YOUTUBE_URL_PATTERN = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=[\w-]+|youtu\.be\/[\w-]+)/
 
 export type StartListenMessage = {
     type: 'START_LISTEN'

@@ -1,5 +1,4 @@
-import { ExtensionMessage } from "../messages"
-import { YOUTUBE_URL_PATTERN } from "../components/InputUrl"
+import { ExtensionMessage, YOUTUBE_URL_PATTERN } from "../messages"
 
 let session: { tabId: number } | null = null
 
