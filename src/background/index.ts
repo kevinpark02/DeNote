@@ -9,6 +9,9 @@ chrome.runtime.onMessage.addListener((message: ExtensionMessage) => {
     if (message.type === 'PLAYBACK_ENDED') {
         handlePlaybackEnded()
     }
+    if (message.type === 'RECORDING_COMPLETE') {
+        console.log('DeNote: recording complete', message.size, 'bytes')
+    }
 })
 
 const seekAndPlay = (from: number, to: number): void => {
@@ -33,7 +36,7 @@ const seekAndPlay = (from: number, to: number): void => {
 
 const resetCapture = async (): Promise<void> => {
     if (await chrome.offscreen.hasDocument()) {
-        chrome.runtime.sendMessage({ type: 'STOP_CAPTURE' })
+        chrome.runtime.sendMessage({ type: 'STOP_CAPTURE' }).catch(() => {})
         await chrome.offscreen.closeDocument()
     }
     session = null
@@ -76,15 +79,15 @@ const handleStartListen = async (message: Extract<ExtensionMessage, { type: 'STA
             resolve(streamId)
         })
     })
-    chrome.runtime.sendMessage({ type: 'CAPTURE_STREAM', streamId })
+    chrome.runtime.sendMessage({ type: 'CAPTURE_STREAM', streamId }).catch(() => {})
 }
 
-const handlePlaybackEnded = async (): Promise<void> => {
-    await resetCapture()
+const handlePlaybackEnded = (): void => {
+    session = null
 }
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     if (session?.tabId === tabId) {
-        handlePlaybackEnded()
+        resetCapture()
     }
 })

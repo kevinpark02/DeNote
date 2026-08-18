@@ -9,7 +9,8 @@ interface ChromeTabCaptureConstraints extends MediaTrackConstraints {
 
 let audioContext: AudioContext | null = null
 let mediaStream: MediaStream | null = null
-let intervalId: number | null = null
+let recorder: MediaRecorder | null = null
+let recordedChunks: Blob[] = []
 
 chrome.runtime.onMessage.addListener((message: ExtensionMessage) => {
     if (message.type === 'CAPTURE_STREAM') {
@@ -42,28 +43,35 @@ const startCapture = async (streamId: string): Promise<void> => {
 
     audioContext = new AudioContext()
     const source = audioContext.createMediaStreamSource(mediaStream)
-    const analyser = audioContext.createAnalyser()
-    analyser.fftSize = 2048
-
-    source.connect(analyser)
     source.connect(audioContext.destination)
 
-    const data = new Float32Array(analyser.fftSize)
-    const tick = () => {
-        analyser.getFloatTimeDomainData(data)
+    const audioOnlyStream = new MediaStream(mediaStream.getAudioTracks())
+    recordedChunks = []
+    recorder = new MediaRecorder(audioOnlyStream, { mimeType: 'audio/webm' })
 
-        // TODO: pitch detection — feed `data` into an analysis algorithm here
+    recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+            recordedChunks.push(event.data)
+        }
     }
-    intervalId = window.setInterval(tick, 500)
+
+    recorder.start()
 }
 
 const stopCapture = (): void => {
-    if (intervalId !== null) {
-        clearInterval(intervalId)
-        intervalId = null
+    if (recorder && recorder.state !== 'inactive') {
+        recorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'audio/webm' })
+            chrome.runtime.sendMessage({ type: 'RECORDING_COMPLETE', size: blob.size }).catch(() => {})
+            window.close()
+        }
+        recorder.stop()
     }
+
     mediaStream?.getTracks().forEach((track) => track.stop())
     audioContext?.close()
     mediaStream = null
     audioContext = null
+    recorder = null
 }
+

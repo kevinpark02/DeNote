@@ -23,8 +23,14 @@ export type PlaybackEndedMessage = {
     type: 'PLAYBACK_ENDED'
 }
 
+export type RecordingCompleteMessage = {
+    type: 'RECORDING_COMPLETE'
+    size: number
+}
+
 export type ExtensionMessage =
     | StartListenMessage
     | CaptureStreamMessage
     | StopCaptureMessage
     | PlaybackEndedMessage
+    | RecordingCompleteMessage
