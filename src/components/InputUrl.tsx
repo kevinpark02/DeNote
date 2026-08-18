@@ -1,12 +1,11 @@
 import { ChangeEvent, FocusEvent, useState } from 'react'
 import './Dropdown.css'
+import { YOUTUBE_URL_PATTERN } from '../messages'
 
 type InputUrlProps = {
     url: string
     onChange: (url: string) => void
 }
-
-export const YOUTUBE_URL_PATTERN = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=[\w-]+|youtu\.be\/[\w-]+)/
 
 const InputUrl = ({ url, onChange }: InputUrlProps) => {
     const [urlInvalid, setUrlInvalid] = useState(false)
