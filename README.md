@@ -937,7 +937,7 @@ scary final step.
 ### M0 — Setup & skeleton deploy · ~10 hrs · weeks 1–2
 - [ ] Monorepo layout (section 5), README, this spec
 - [ ] Local dev: Docker Compose Postgres, FastAPI "hello", Vite React app
-- [ ] GitHub Actions CI: `ruff` + `pytest` (backend), `eslint` + `tsc` (frontend)
+- [ ] GitHub Actions CI: `ruff` + `pytest` (backend), `oxlint` + `tsc` (frontend)
 - [ ] AWS: budget alert at $5, SAM template, deploy "hello" API + React
       build to S3/CloudFront, connect Neon
 - **Done when:** the live URL shows a React page that shows data from the
