@@ -1,0 +1,23 @@
+:root {
+  --bg: #000000;
+  --surface: #0f0f0f;
+  --border: #262626;
+  --text-dim: #525252;
+  --text-muted: #a3a3a3;
+  --text: #e5e5e5;
+  --text-strong: #ffffff;
+
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 2rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1 {
+  color: var(--text-strong);
+}
