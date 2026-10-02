@@ -308,6 +308,24 @@ not a bot"). This app runs on AWS Lambda, which uses exactly those IPs.
 **If it fails:** pin and update yt-dlp often; try passing cookies; last
 resort: let users upload an audio file instead (a scope change).
 
+**Results: laptop (2026-10-02 · yt-dlp 2026.08.19 · ffmpeg 9.0.2)**
+
+| Test | Link type | Result | Download | Trim |
+|------|-----------|--------|----------|------|
+| Guitar cover, 1:10–1:30 | `watch?v=` | ✅ | 1.9 s | 0.4 s |
+| Same clip | `youtu.be/` | ✅ identical output | 1.3 s | 0.5 s |
+| Guitar Short, 0:00–0:10 | `shorts/` | ✅ | 1.8 s | 0.1 s |
+| Official major-label music video, 0:30–0:45 | `youtu.be/` | ✅ | 1.5 s | 0.2 s |
+| Video doesn't exist | `watch?v=` | ✅ clean error ("unavailable") | | |
+| Malformed URL | `youtu.be/` | ✅ clean error ("Unsupported URL") | | |
+| End before start · longer than 30 s · past the end of the video | | ✅ rejected | | |
+
+- Every clip starts and ends at the right moment by ear, and the audio is clean
+- The full download is deleted automatically (temp folder); only the trimmed WAV is kept
+- **For M2:** check the video's duration *before* downloading (`download=False`),
+  and give yt-dlp a logger so errors aren't printed twice
+- ⏳ **Lambda test still pending** (needs AWS), so the pass criterion isn't met yet
+
 ### R2. Detecting notes in a full mix ⚠️ biggest risk
 **Risk:** note-detection models work well on solo guitar but get confused
 by full songs. Vocals, bass, keys, and drums all show up as "notes."
@@ -944,7 +962,7 @@ scary final step.
   deployed API
 
 ### M1 — Spikes · ~20 hrs · weeks 2–4
-- [ ] R1 YouTube download — **run inside a Lambda**
+- [ ] R1 YouTube download — **run inside a Lambda** (laptop ✅, Lambda ⏳)
 - [ ] R2 Note detection on the 6 hand-tabbed test clips
 - [ ] R3 Fret mapping with unit tests
 - [ ] R4 Playback sync test page
@@ -1084,3 +1102,4 @@ tempting, is required to ship.
 | 8 | 1 lesson per user per 24 h; failed lessons don't count | 10/day; count every attempt | Keeps costs predictable without an admin; failures shouldn't cost a user their day |
 | 9 | Single-note detection only | Chords / polyphonic | Much more reliable; proves the concept first |
 | 10 | Launch even if accuracy targets are missed | Block launch on accuracy | Honest, measured numbers are more useful than waiting for perfect |
+| 11 | Run the laptop spikes (R1-local → R4) before any AWS setup | AWS skeleton deploy first (original M0 order) | R2 is the biggest risk and costs $0 to test; nothing should be spent on hosting until note detection is shown to work |
