@@ -3,5 +3,19 @@ name = "denote-spikes"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "basic-pitch>=0.4.0",
+    "demucs>=4.1.0",
+    "onnxruntime>=1.30.0",
+    "setuptools<81",
     "yt-dlp>=2026.8.19",
 ]
+
+[tool.uv]
+# Only resolve for the platforms we use: Apple Silicon Macs (dev) and Linux (Lambda).
+environments = [
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "sys_platform == 'linux'",
+]
+# basic-pitch 0.4.0 pins TensorFlow < 2.15.1, which has no Python 3.12 builds.
+# Skip it: the model runs on CoreML (Mac) or ONNX Runtime (Linux) instead.
+exclude-dependencies = ["tensorflow", "tensorflow-macos"]
