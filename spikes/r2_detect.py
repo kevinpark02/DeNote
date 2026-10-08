@@ -25,6 +25,8 @@ from demucs.api import Separator, save_audio
 LOWEST_NOTE = 40  # low E string, open (E2)
 HIGHEST_NOTE = 86  # high e string, fret 22 (D6)
 MIN_NOTE_MS = 50
+MIN_CONFIDENCE = 0.4 # quieter notes are usually background guitar or noise
+MERGE_GAP_MS = 30 # same note again within this gap = one note (e.g. vibrato)
 OUTPUT_DIR = Path(__file__).parent / "output" / "r2"
 # Apple GPU if available; Lambda has no GPU, so production will use "cpu".
 DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
@@ -74,6 +76,9 @@ def keep_guitar_range(notes: list[Note]) -> list[Note]:
     """Drop notes a guitar in standard tuning can't play."""
     return [n for n in notes if LOWEST_NOTE <= n.pitch <= HIGHEST_NOTE]
 
+def keep_confident_notes(notes: list[Note]) -> list[Note]:
+    """Drop notes the model only faintly heard."""
+    return [n for n in notes if n.amplitude >= MIN_CONFIDENCE]   
 
 def reduce_to_single_notes(notes: list[Note]) -> list[Note]:
     """When notes overlap, keep the louder one so only one plays at a time."""
@@ -87,6 +92,21 @@ def reduce_to_single_notes(notes: list[Note]) -> list[Note]:
         result.append(note)
     return result
 
+def merge_repeated_notes(notes: list[Note]) -> list[Note]:
+    """Join a note with the next one if it's the same pitch and starts right after.
+
+    basic-pitch sometimes splits one long note (especially with vibrato) in two.
+    """
+    result: list[Note] = []
+    for note in notes:
+        if result:
+            previous = result[-1]
+            gap_ms = (note.start - previous.end) * 1000
+            if note.pitch == previous.pitch and gap_ms <= MERGE_GAP_MS:
+                previous.end = note.end  # stretch the previous note instead
+                continue
+        result.append(note)
+    return result
 
 def drop_short_notes(notes: list[Note]) -> list[Note]:
     """Remove "ghost" notes shorter than MIN_NOTE_MS."""
@@ -115,15 +135,19 @@ def main() -> None:
         timings["detect"] = time.perf_counter() - started
 
     in_range = keep_guitar_range(raw)
-    single = reduce_to_single_notes(in_range)
-    final = drop_short_notes(single)
+    confident = keep_confident_notes(in_range)
+    single = reduce_to_single_notes(confident)
+    merged = merge_repeated_notes(single)
+    final = drop_short_notes(merged)
 
     print(
         f"Clip:      {args.clip.name}  ({'separated' if args.separate else 'full mix'})"
     )
     print(f"Detected:  {len(raw)} notes")
     print(f"In range:  {len(in_range)}")
+    print(f"Confident: {len(confident)}")
     print(f"Single:    {len(single)}")
+    print(f"Merged:    {len(merged)}")
     print(f"Final:     {len(final)}  (after dropping notes < {MIN_NOTE_MS} ms)")
     for phase, seconds in timings.items():
         print(f"{phase.capitalize() + ':':10} {seconds:.1f}s")
@@ -144,7 +168,9 @@ def main() -> None:
         "counts": {
             "detected": len(raw),
             "in_range": len(in_range),
+            "confident": len(confident),
             "single": len(single),
+            "merged": len(merged),
             "final": len(final),
         },
         "timings_s": {phase: round(s, 2) for phase, s in timings.items()},
